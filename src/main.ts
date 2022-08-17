@@ -21,11 +21,9 @@ async function run() {
 
     const limiter = inputs.requestRate > 0 ? new RateLimiter({tokensPerInterval: inputs.requestRate, interval: 'minute'}) : undefined;
     const vt = new VirusTotal(inputs.vtApiKey);
-    if (github.context().eventName == 'release') {
-      await runForReleaseEvent(vt, limiter);
-    } else {
-      await runForLocalFiles(vt, limiter);
-    }
+    const tag = await github.getLatestTag(octokit);
+    core.info(github.context().eventName);
+    await runForReleaseEvent(vt, limiter, tag[0].name);
 
     await core.group(`Setting output analysis`, async () => {
       context.setOutput('analysis', outputAnalysis.join(','));
@@ -64,10 +62,10 @@ async function runForLocalFiles(vt: VirusTotal, limiter: RateLimiter | undefined
   });
 }
 
-async function runForReleaseEvent(vt: VirusTotal, limiter: RateLimiter | undefined) {
-  core.info(`Release event detected for ${github.context().ref} in this workflow. Preparing to scan assets...`);
+async function runForReleaseEvent(vt: VirusTotal, limiter: RateLimiter | undefined, tag: string) {
+  core.info(`Release event detected for tag ${tag} in this workflow. Preparing to scan assets...`);
 
-  const release = await github.getRelease(octokit, github.context().ref.replace('refs/tags/', ''));
+  const release = await github.getRelease(octokit, tag);
 
   const assets = await github.getReleaseAssets(octokit, release, inputs.files);
   if (assets.length == 0) {

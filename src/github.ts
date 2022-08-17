@@ -23,6 +23,9 @@ export interface ReleaseAsset {
   size: number;
   file: Buffer;
 }
+export interface Tag {
+  name: string;
+}
 
 export function context(): Context {
   return github.context;
@@ -94,4 +97,17 @@ export const updateReleaseBody = async (octokit, release: Release): Promise<Rele
         throw new Error(`Cannot update release body: ${error}`);
       })
   ).data as Release;
+};
+
+export const getLatestTag = async (octokit): Promise<Tag> => {
+  return (
+    await octokit.rest.repos
+      .listTags({
+        ...github.context.repo,
+        per_page: 1
+      })
+      .catch(error => {
+        throw new Error(`Unable to get latest tag: ${error}`);
+      })
+  ).data;
 };
