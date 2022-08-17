@@ -22523,7 +22523,7 @@ function runForReleaseEvent(vt, limiter, tag) {
             core.warning(`No assets were found for ${release.tag_name} release tag. Please check the 'files' input.`);
             return;
         }
-        if (assets.length <= 5) {
+        if (assets.length <= 0) {
             release.body = release.body.concat(`\n\n🛡 [VirusTotal GitHub Action](https://github.com/crazy-max/ghaction-virustotal) analysis:`);
         }
         else {
@@ -22554,7 +22554,7 @@ function runForReleaseEvent(vt, limiter, tag) {
             }));
         }));
         if (assets.length > 5) {
-            release.body = release.body.concat(`\n<sub>These scans were produced by the [VirusTotal GitHub Action](https://github.com/crazy-max/ghaction-virustotal)</sub></details>\n`);
+            release.body = release.body.concat(`\n<sub>These scans were produced by the [VirusTotal GitHub Action](https://github.com/nikhilbadyal/ghaction-virustotal)</sub></details>\n`);
         }
         if (/true/i.test(core.getInput('update_release_body'))) {
             core.debug(`Appending analysis link(s) to release body`);

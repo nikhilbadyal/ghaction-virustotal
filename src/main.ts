@@ -73,7 +73,7 @@ async function runForReleaseEvent(vt: VirusTotal, limiter: RateLimiter | undefin
     return;
   }
 
-  if (assets.length <= 5) {
+  if (assets.length <= 0) {
     release.body = release.body.concat(`\n\n🛡 [VirusTotal GitHub Action](https://github.com/crazy-max/ghaction-virustotal) analysis:`);
   } else {
     release.body = release.body.concat(`\n\n<details>\n  <summary>🛡 VirusTotal analysis</summary>\n`);
@@ -103,7 +103,7 @@ async function runForReleaseEvent(vt: VirusTotal, limiter: RateLimiter | undefin
     });
   });
   if (assets.length > 5) {
-    release.body = release.body.concat(`\n<sub>These scans were produced by the [VirusTotal GitHub Action](https://github.com/crazy-max/ghaction-virustotal)</sub></details>\n`);
+    release.body = release.body.concat(`\n<sub>These scans were produced by the [VirusTotal GitHub Action](https://github.com/nikhilbadyal/ghaction-virustotal)</sub></details>\n`);
   }
 
   if (/true/i.test(core.getInput('update_release_body'))) {
